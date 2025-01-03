@@ -18,6 +18,5 @@
       "src": "/(.*)",
       "dest": "ai_chat_project/wsgi.py"
     }
-  ],
-  "directoryListing": false
+  ]
 }
