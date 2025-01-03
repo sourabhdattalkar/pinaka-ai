@@ -23,12 +23,13 @@ def save_api_key(key):
 
 def set_api_key(request):
     """Handle the API key input from the user."""
-    if request.method == "POST":
+'''    if request.method == "POST":
         api_key = request.POST.get('api_key')
         if api_key:
             save_api_key(api_key)
             return render(request, 'ai_chat/set_api_key.html', {'success': True})
-    return render(request, 'ai_chat/set_api_key.html')
+    '''
+    return render(request, 'ai_chat/about.html')
 
 @csrf_exempt  # Temporarily disable CSRF check for this view (for simplicity)
 def get_response(request):
