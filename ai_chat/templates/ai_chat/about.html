@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
+<head>{% load static %}
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Me - Sourabh Dattalkar</title>
@@ -92,7 +93,7 @@
 <body>
     <div class="container">
         <div class="intro">
-            <img src="/static/profile.jpg" alt="Profile Picture" class="profile-pic">
+            <img src="{% static 'profile.jpg' %}" alt="Profile Image" class="profile-pic">
             <h1>Sourabh Dattalkar</h1>
             <p>Technical Trainer | Cloud Enthusiast | Innovator</p>
         </div>
