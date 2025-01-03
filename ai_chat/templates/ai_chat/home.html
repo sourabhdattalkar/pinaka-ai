@@ -76,20 +76,28 @@
         button:hover {
             background-color: #45a049;
         }
+
+        .loading-message {
+            display: inline-block;
+            margin-left: 10px;
+            font-size: 0.9rem;
+            color: #555;
+        }
     </style>
 </head>
 <body>
     <div style="padding: 20px;">
         <h1>Welcome to Pinaka AI </h1>
         <div>
-            <a href="{% url 'set_api_key' %}">Developed by Sourabh Dattalkar</a>
+            <a href="">Developed by Sourabh Dattalkar</a>
         </div>
 
         <h2>Ask a Question</h2>
         <form id="chat-form" method="post">
             {% csrf_token %}
             {{ form.as_p }}  <!-- Render the form (question input field) -->
-            <button type="submit">Submit</button>
+            <button type="submit" id="submit-button">Submit</button>
+            <span class="loading-message" id="loading-message" style="display: none;">Wait for response...</span>
         </form>
 
         <div class="response-container" id="response-container" style="display: none;">
@@ -103,8 +111,11 @@
             e.preventDefault();  // Prevent the default form submission
 
             const question = document.querySelector('textarea[name="question"]').value;
+            const loadingMessage = document.getElementById('loading-message');
+            const submitButton = document.getElementById('submit-button');
 
-            console.log('Question:', question);  // Log the question for debugging
+            // Show the loading message
+            loadingMessage.style.display = 'inline';
 
             fetch("{% url 'get_response' %}", {
                 method: 'POST',
@@ -126,7 +137,11 @@
                     alert('Error: ' + data.error);
                 }
             })
-            .catch(error => console.log('Error:', error));  // Log any fetch errors
+            .catch(error => console.log('Error:', error))  // Log any fetch errors
+            .finally(() => {
+                // Hide the loading message once the response is processed
+                loadingMessage.style.display = 'none';
+            });
         });
 
         function formatResponse(response) {
