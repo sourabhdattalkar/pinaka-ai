@@ -7,74 +7,85 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
-            font-family: Arial, sans-serif;
-            line-height: 1.6;
-            background-color: #f9f9f9;
+            font-family: 'Arial', sans-serif;
+            background: linear-gradient(120deg, #6a11cb, #2575fc);
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            color: #fff;
+        }
+
+        .container {
+            background: #fff;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.2);
             padding: 20px;
+            max-width: 600px;
+            width: 100%;
+            color: #333;
         }
 
         h1 {
+            font-size: 2rem;
+            margin-bottom: 20px;
             text-align: center;
-            color: #333;
+            color: #6a11cb; /* Welcome font color changed */
         }
 
-        .response-container {
-            margin-top: 30px;
-            background-color: #fff;
-            padding: 20px;
-            border-radius: 8px;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            max-width: 800px;
-            margin: 20px auto;
-        }
-
-        .response-container h2 {
-            color: #333;
-        }
-
-        .response-container p {
-            font-size: 1rem;
-            color: #555;
-        }
-
-        pre {
-            background-color: #f4f4f4;
-            padding: 15px;
-            border-radius: 5px;
-            font-size: 1rem;
-            line-height: 1.4;
-            overflow-x: auto;
-            white-space: pre-wrap;
-            word-wrap: break-word;
-        }
-
-        .response-container pre code {
-            display: block;
-            background: transparent;
-            color: #333;
-            font-family: 'Courier New', Courier, monospace;
+        form {
+            margin-top: 20px;
         }
 
         textarea {
             width: 100%;
+            height: 50px; /* Smaller question box */
             padding: 10px;
-            font-size: 1rem;
-            border-radius: 5px;
+            font-size: 0.9rem;
+            border-radius: 8px;
             border: 1px solid #ccc;
+            margin-bottom: 15px;
+            resize: none;
         }
 
         button {
-            background-color: #4CAF50;
-            color: white;
+            background: #4CAF50;
+            color: #fff;
+            font-size: 1rem;
             padding: 10px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 1rem;
+            transition: background 0.3s ease;
         }
 
         button:hover {
-            background-color: #45a049;
+            background: #45a049;
+        }
+
+        .response-container {
+            margin-bottom: 20px;
+            max-height: 150px; /* Set height for response box */
+            overflow-y: auto; /* Add scrollbar for long content */
+            background: #f4f4f4;
+            padding: 15px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        }
+
+        .response-container pre {
+            background: #333;
+            color: #fff;
+            padding: 10px;
+            border-radius: 8px;
+            font-size: 0.9rem;
+            overflow-x: auto;
+        }
+
+        .response-container pre code {
+            font-family: 'Courier New', monospace;
         }
 
         .loading-message {
@@ -83,38 +94,46 @@
             font-size: 0.9rem;
             color: #555;
         }
+
+        footer {
+            margin-top: 10px;
+            font-size: 0.8rem;
+            color: #666;
+            text-align: center;
+        }
     </style>
 </head>
 <body>
-    <div style="padding: 20px;">
-        <h1>Welcome to Pinaka AI </h1>
-        <div>
-            <a href="">Developed by Sourabh Dattalkar</a>
-        </div>
-
-        <h2>Ask a Question</h2>
-        <form id="chat-form" method="post">
-            {% csrf_token %}
-            {{ form.as_p }}  <!-- Render the form (question input field) -->
-            <button type="submit" id="submit-button">Submit</button>
-            <span class="loading-message" id="loading-message" style="display: none;">Wait for response...</span>
-        </form>
+    <div class="container">
+        <h1>Welcome to Pinaka AI</h1>
 
         <div class="response-container" id="response-container" style="display: none;">
             <h2>Response</h2>
             <div id="response-text"></div>
         </div>
+
+        <form id="chat-form" method="post">
+            {% csrf_token %}
+            {{ form.as_p }}
+            <button type="submit" id="submit-button">Submit</button>
+            <span class="loading-message" id="loading-message" style="display: none;">Wait for response...</span>
+        </form>
+
+        <footer>
+            © 2025 Pinaka AI. All rights reserved.
+        </footer>
     </div>
 
     <script>
         document.getElementById('chat-form').addEventListener('submit', function(e) {
-            e.preventDefault();  // Prevent the default form submission
+            e.preventDefault();
 
             const question = document.querySelector('textarea[name="question"]').value;
             const loadingMessage = document.getElementById('loading-message');
-            const submitButton = document.getElementById('submit-button');
+            const responseContainer = document.getElementById('response-container');
+            const responseText = document.getElementById('response-text');
 
-            // Show the loading message
+            // Show loading message
             loadingMessage.style.display = 'inline';
 
             fetch("{% url 'get_response' %}", {
@@ -123,46 +142,33 @@
                     'Content-Type': 'application/json',
                     'X-CSRFToken': '{{ csrf_token }}'
                 },
-                body: JSON.stringify({ question: question })  // Send question as JSON
+                body: JSON.stringify({ question: question })
             })
             .then(response => response.json())
             .then(data => {
-                const responseContainer = document.getElementById('response-container');
-                const responseText = document.getElementById('response-text');
-                
                 if (data.response) {
-                    responseContainer.style.display = 'block';  // Show response container
-                    responseText.innerHTML = formatResponse(data.response);  // Format and display the response
+                    responseContainer.style.display = 'block';
+                    responseText.innerHTML = formatResponse(data.response);
                 } else {
                     alert('Error: ' + data.error);
                 }
             })
-            .catch(error => console.log('Error:', error))  // Log any fetch errors
+            .catch(error => console.log('Error:', error))
             .finally(() => {
-                // Hide the loading message once the response is processed
                 loadingMessage.style.display = 'none';
             });
         });
 
         function formatResponse(response) {
-            // This function formats the response text, highlighting code blocks and general text.
             let formattedResponse = response;
 
-            // Highlight Python code blocks
             formattedResponse = formattedResponse.replace(/```python([\s\S]*?)```/g, (match, code) => {
-                return `<pre><code class="python-code">${code.trim()}</code></pre>`;
+                return `<pre><code>${code.trim()}</code></pre>`;
             });
 
-            // Highlight C code blocks
             formattedResponse = formattedResponse.replace(/```c([\s\S]*?)```/g, (match, code) => {
-                return `<pre><code class="c-code">${code.trim()}</code></pre>`;
+                return `<pre><code>${code.trim()}</code></pre>`;
             });
-
-            // Format email or general text (non-code)
-            if (!formattedResponse.includes('<pre>')) {
-                // Wrap plain text in <p> tags for better readability
-                formattedResponse = `<p>${formattedResponse.replace(/\n/g, '<br>')}</p>`;
-            }
 
             return formattedResponse;
         }
