@@ -6,7 +6,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>About Me - Sourabh Dattalkar</title>
-    {% load staticfiles %}
+    {% load static %}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         body {
@@ -93,10 +93,10 @@
     </style>
 </head>
 <body>
-    <script>console.log("{% staticfiles 'profile.jpg' %}");</script>
+    <script>console.log("{% static 'profile.jpg' %}");</script>
     <div class="container">
         <div class="intro">
-            <img src="{% staticfiles 'profile.jpg' %}" alt="Profile Image" class="profile-pic">
+            <img src="{% static 'profile.jpg' %}" alt="Profile Image" class="profile-pic">
 
 
             <h1>Sourabh Dattalkar</h1>
